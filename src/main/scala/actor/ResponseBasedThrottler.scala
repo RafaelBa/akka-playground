@@ -3,7 +3,10 @@ package actor
 import actor.ResponseBasedThrottler.{Active, Data, SetBoundries, State}
 import akka.actor.{Actor, ActorLogging, ActorRef, FSM, Props}
 import akka.pattern.{ask, pipe}
+import akka.util.Timeout
 import scala.collection.immutable.Queue
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.ExecutionContext.Implicits.global
 
 case class Message()
 
@@ -25,12 +28,20 @@ object ResponseBasedThrottler {
 }
 
 class ResponseBasedThrottler(maxCalls: Int, maxQueue: Int, actor: ActorRef) extends Actor with FSM[State, Data] {
+  implicit val timeout = Timeout(2 seconds)
 
   startWith(Active, Data(maxCalls, maxQueue, Seq.empty))
 
   when(Active) {
     case Event(SetBoundries(newMaxCalls, newMaxQueue), data) ⇒
       stay using data.copy(newMaxCalls, newMaxQueue)
+
+    case Event(msg, data) ⇒
+      Thread.sleep(1000)      // FIXME no, we don't want to sleep
+      val res = actor ? msg
+      pipe(res) to sender
+      stay using data
+
 
       // needs rework: the sending a message to the actual actor. But this step has to be split up into sending the thing and receving. response.onComplete(x => x.fold(self ! Error)(value => self ! Success(value))
     /*case Event(any, messages) if messages.size < maxCalls ⇒
