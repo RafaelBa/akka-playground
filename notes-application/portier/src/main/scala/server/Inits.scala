@@ -1,9 +1,9 @@
 package server
 
-import controllers.Health
+import controllers.HealthController
 
 object Inits {
   def run(): Unit = {
-    Health.init()
+    HealthController.init()
   }
 }

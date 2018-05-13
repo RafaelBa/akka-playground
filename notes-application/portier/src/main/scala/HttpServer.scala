@@ -1,9 +1,6 @@
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
-import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
-import controllers.Health
 import server.Inits
 
 import scala.io.StdIn
