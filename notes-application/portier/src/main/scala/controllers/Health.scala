@@ -2,19 +2,17 @@ package controllers
 
 import java.time.{Duration, Instant}
 
+import objects.HealthStatus
+
 object Health {
-  private val startTime = {
-    println("start")
+  private val startTime = Instant.now
 
-    Instant.now
-  }
-
-  def get: String = {
-    s"""{
-      "name": "portier-akka",
-      "status": "OK"
-      "uptime": ${Duration.between(startTime, Instant.now)}
-    }"""
+  def get: HealthStatus = {
+    HealthStatus(
+      name = "portier-akka",
+      status = "OK",
+      uptime = Duration.between(startTime, Instant.now).toString
+    )
   }
 
   def init(): Unit = Unit
