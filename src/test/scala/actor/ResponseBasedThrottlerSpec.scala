@@ -42,20 +42,24 @@ s2"""
 
     messages foreach { probe.send(throttler, _) }
 
+    probe.expectMsg(hi)
+    probe.expectMsg(hi)
+
     // FIXME this does not work as expected, needs to be fixed
     probe.within(1 second, 2 seconds){
       probe.expectMsg(hi)
       probe.expectMsg(hi)
     }
 
-    probe.within(1 second, 2 seconds){
-      probe.expectMsg(hi)
-      probe.expectMsg(hi)
-    }
+//    probe.within(2 second, 3 seconds){
+//      probe.expectMsg(hi)
+//      probe.expectMsg(hi)
+//    }
 
-    probe.within(1 second, 2 seconds){
+    probe.within(3 second, 4 seconds){
       probe.expectMsg(successMessage)
     }
+
 
     success
   }

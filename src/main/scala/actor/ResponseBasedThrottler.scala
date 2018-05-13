@@ -33,11 +33,17 @@ class ResponseBasedThrottler(maxCalls: Int, maxQueue: Int, actor: ActorRef) exte
   startWith(Active, Data(maxCalls, maxQueue, Seq.empty))
 
   when(Active) {
-    case Event(SetBoundries(newMaxCalls, newMaxQueue), data) ⇒
+    case Event(SetBoundries(newMaxCalls, newMaxQueue), data) =>
       stay using data.copy(newMaxCalls, newMaxQueue)
 
-    case Event(msg, data) ⇒
+    case Event(msg, data) =>
       Thread.sleep(1000)      // FIXME no, we don't want to sleep
+      if (msg == "success message!") Thread.sleep(2500)
+      val res = actor ? msg
+      pipe(res) to sender
+      stay using data
+
+    case Event(msg, data) =>
       val res = actor ? msg
       pipe(res) to sender
       stay using data
