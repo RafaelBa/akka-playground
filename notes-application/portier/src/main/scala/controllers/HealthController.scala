@@ -4,7 +4,7 @@ import java.time.{Duration, Instant}
 
 import objects.HealthStatus
 
-object Health {
+object HealthController {
   private val startTime = Instant.now
 
   def get: HealthStatus = {
